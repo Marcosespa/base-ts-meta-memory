@@ -13,7 +13,7 @@ const main = async () => {
         database: new Database(),
     });
 
-    httpServer(+PORT);
+    httpServer(+PORT)
 };
 
 main();
