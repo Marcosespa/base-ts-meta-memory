@@ -17,7 +17,7 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
       state.available = true;
       flow.next("Selecciona tu ciudad:");
     } else {
-      flow.complete("Gracias, esperamos ayudarte en otro momento.");
+        return "Gracias, esperamos ayudarte en otro momento.";
     }
   })
   .addAnswer("Selecciona tu ciudad:", {
