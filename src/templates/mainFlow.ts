@@ -11,13 +11,12 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
       { body: "No" }
     ],
     capture: true
-  }, async (ctx, { state, flow }) => {
+  }, async (ctx, { state }) => {
     const answer = ctx.body.toLowerCase();
     if (answer === "Sí" || answer === "Si") {
       state.available = true;
-      flow.next("Selecciona tu ciudad:");
     } else {
-        return "Gracias, esperamos ayudarte en otro momento.";
+      return "Gracias, esperamos ayudarte en otro momento.";
     }
   })
   .addAnswer("Selecciona tu ciudad:", {
@@ -29,14 +28,25 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
     capture: true
   }, async (ctx, { state }) => {
     const selectedCity = ctx.body;
-    console.log(`Nombre: ${state.userName}, Disponible para cargar en: ${selectedCity}`);
+    state.selectedCity = selectedCity;
+  })
+  .addAnswer("Por favor, comparte tu ubicación:", {
+    requestLocation: true,
+    capture: true
+  }, async (ctx, { state }) => {
+    const userLocation = ctx.location;
+    console.log(`Nombre: ${state.userName}, Disponible para cargar en: ${state.selectedCity}, Ubicación: ${userLocation}`);
     
+    
+
+
     // Log de respuestas del usuario
     const responseName = state.userName;
     const numberFrom = ctx.from;
     console.log("Nombre ingresado:", responseName);
     console.log("Número de teléfono del usuario:", numberFrom);
-    console.log("Ciudad seleccionada:", selectedCity);
+    console.log("Ciudad seleccionada:", state.selectedCity);
+    console.log("Ubicación del usuario:", userLocation);
     console.log("Otras propiedades:", ctx);
   });
 
