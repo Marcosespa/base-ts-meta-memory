@@ -3,7 +3,7 @@ import { createBot, createProvider, createFlow, addKeyword, utils } from '@build
 import { MetaProvider as Provider } from '@builderbot/provider-meta'
 
 const decision = '';  // Se usa const ya que no se reasigna
-let ciudadActual = '';  // Sigue siendo let porque puede cambiar más adelante
+const ciudadActual = '';  // Sigue siendo let porque puede cambiar más adelante
 const tipoVehiculo = '';  // Se usa const ya que no se reasigna
 const verificacionActual = '';  // Se usa const ya que no se reasigna
 
@@ -11,49 +11,26 @@ const verificacionActual = '';  // Se usa const ya que no se reasigna
 
 const flowCarga = addKeyword(EVENTS.ACTION)
   .addAnswer('Gracias por escogernos para buscar Carga 🚛')
-  .addAnswer("Selecciona tu ciudad:", {
-    buttons: [
-      { body: "Cali" },
-      { body: "Bogotá" },
-      { body: "Medellín" }
-    ],
-    capture: true
-  }, async (ctx, { flowDynamic }) => {
-    ciudadActual = ctx.body;
-    await flowDynamic([`Has seleccionado: ${ciudadActual}.`]); // Asegura que el flujo continúe
-  })
-  .addAnswer("¿Cuál es el tipo de carro?", {
-    buttons: [
-      { body: "Turbo" },
-      { body: "Sencillo" },
-      { body: "Doble Troque" },
-      { body: "Patineta" },
-      { body: "Mula" }
-    ],
-    capture: true
-  }, async (ctx, { state, flowDynamic }) => {
-    const carType = ctx.body;
-    if (["Turbo", "Sencillo", "Doble Troque", "Patineta", "Mula"].includes(carType)) {
-      state.carType = carType;
-      await flowDynamic([`Has seleccionado: ${carType}.`]);
-    } else {
-      await flowDynamic([`Por favor selecciona un tipo de carro válido.`]);
-    }
-  })
   .addAnswer("Por favor, comparte tu ubicación:", {
     requestLocation: true,
     capture: true
   }, async (ctx, { state, flowDynamic }) => {
-    const userLocation = ctx.body.location || ctx.location;
+    const userLocation = ctx.location;
     if (userLocation) {
       state.userLocation = userLocation;
       await flowDynamic([`Gracias por compartir tu ubicación.`]);
     } else {
       await flowDynamic([`Por favor comparte una ubicación válida.`]);
     }
-  });
-
-
+  })
+.addAnswer(`SE LO PASO `)
+.addAnswer(`First Way to Send Buttons`, {
+  buttons:
+      [
+          { body: 'puto' },
+          { body: 'putoo' }
+      ]
+})
 
 
 // Flujos administrativos
