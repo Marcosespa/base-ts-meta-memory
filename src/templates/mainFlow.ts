@@ -1,49 +1,52 @@
 import { addKeyword, createFlow, EVENTS } from "@builderbot/bot";
-import { createBot, createProvider, createFlow, addKeyword, utils } from '@builderbot/bot'
-import { MetaProvider as Provider } from '@builderbot/provider-meta'
+import { createBot, createProvider, utils } from '@builderbot/bot';
+import { MetaProvider as Provider } from '@builderbot/provider-meta';
+import { addKeyword, addAction } from '@builderbot/bot';
 
-const decision = '';  // Se usa const ya que no se reasigna
-const ciudadActual = '';  // Sigue siendo let porque puede cambiar más adelante
-const tipoVehiculo = '';  // Se usa const ya que no se reasigna
-const verificacionActual = '';  // Se usa const ya que no se reasigna
-
-// Flujos
+const userDecisions = {
+  name: '',
+  decision1: '',
+  name1: '',
+};
 
 const flowCarga = addKeyword(EVENTS.ACTION)
   .addAnswer('Gracias por escogernos para buscar Carga 🚛')
+
   .addAnswer("Por favor, comparte tu ubicación:", {
     requestLocation: true,
     capture: true
-  }, async (ctx, { state, flowDynamic }) => {
+  }, async (ctx, { state }) => {
     const userLocation = ctx.location;
-    if (userLocation) {
-      state.userLocation = userLocation;
-      await flowDynamic([`Gracias por compartir tu ubicación.`]);
-    } else {
-      await flowDynamic([`Por favor comparte una ubicación válida.`]);
-    }
-  })
-.addAnswer(`SE LO PASO `)
-.addAnswer(`First Way to Send Buttons`, {
-  buttons:
-      [
-          { body: 'puto' },
-          { body: 'putoo' }
-      ]
-})
+    // Log de respuestas del usuario
+    const responseName = state.userName;
+    const numberFrom = ctx.from;
+    console.log("Nombre ingresado:", userDecisions.name);
+    console.log("Número de teléfono del usuario:", numberFrom);
+    console.log("Ciudad seleccionada:", state.selectedCity);
+    console.log("Ubicación del usuario:", userLocation);
+    console.log("Otras propiedades:", ctx);
+  });
 
+
+  
 
 // Flujos administrativos
-const flowAdministrativos = addKeyword(EVENTS.ACTION).addAnswer(' LA DECISION DE FLUJOS ADMINISTRATIVOS ACA');
-
-
-
+const flowAdministrativos = addKeyword(EVENTS.ACTION)
+  .addAnswer('LA DECISION DE FLUJOS ADMINISTRATIVOS ACA');
+  
 const mainFlow = addKeyword(EVENTS.WELCOME)
   .addAnswer('🚚 ¡Hola! Bienvenido a Rutix, queremos integrar la logística en Colombia')
 
-  .addAnswer('¿Cuál es tu nombre?', { capture: true }, async (ctx, { flowDynamic }) => {
-    await flowDynamic([`¡Genial, ${ctx.body}!`, '']);
+  .addAction(async (_, { flowDynamic }): Promise<void> => {
+    await flowDynamic('Cuál es tu nombre?');
   })
+
+  .addAction({ capture: true }, async (ctx, { flowDynamic, state }): Promise<void> => {
+    userDecisions.name = ctx.body; // Guardamos la decisión del usuario en name
+    await state.update({ name: ctx.body });
+    await flowDynamic(`El nombre es: ${ctx.body}`);
+  })
+
   .addAnswer("¿Te interesan Buscar Carga o procesos administrativos con Rutix?", {
     buttons: [
       { body: "Buscar Carga 🚚" },
@@ -61,10 +64,6 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
       return gotoFlow(mainFlow);
     }
   });
-
-
-
-
 
 // Exportaciones
 export { mainFlow, flowCarga, flowAdministrativos };
