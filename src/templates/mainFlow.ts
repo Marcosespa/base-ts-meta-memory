@@ -6,7 +6,9 @@ import { addKeyword, addAction } from '@builderbot/bot';
 const userDecisions = {
   name: '',
   decision1: '',
+  carType:'',
   name1: '',
+  peso:'',
 };
 
 const flowCarga = addKeyword(EVENTS.ACTION)
@@ -25,10 +27,35 @@ const flowCarga = addKeyword(EVENTS.ACTION)
     console.log("Ciudad seleccionada:", state.selectedCity);
     console.log("Ubicación del usuario:", userLocation);
     console.log("Otras propiedades:", ctx);
-  });
+  })
 
+  .addAction(async (ctx, { provider }) => {
+        await provider.sendButtons(ctx.from, [
+            { body: 'Turbo' },
+            { body: 'Sencillo' },
+            { body: 'Mula' }
+        ], `Send Buttons Alternative`)
 
+    })
+    .addAction({ capture: true }, async (ctx, { flowDynamic, state }): Promise<void> => {
+      userDecisions.carType = ctx.body; // Guardamos la decisión del usuario en name
+      await state.update({ carType: ctx.body });
+      await flowDynamic(`El tipo de carro que seleccionaste es : ${ctx.body}`);
+      console.log("CARRO TIPO:", userDecisions.carType);
+    });
+
+    .addAction(async (_, { flowDynamic }): Promise<void> => {
+      await flowDynamic('Porfavor ingrese el peso en KG con el pasa su vehiculo?');
+    })
   
+    .addAction({ capture: true }, async (ctx, { flowDynamic, state }): Promise<void> => {
+      userDecisions.peso = ctx.body; // Guardamos la decisión del usuario en name
+      await state.update({ peso: ctx.body });
+      await flowDynamic(`El peso es: ${ctx.body}`);
+    })
+
+
+
 
 // Flujos administrativos
 const flowAdministrativos = addKeyword(EVENTS.ACTION)
