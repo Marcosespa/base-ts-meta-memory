@@ -21,7 +21,7 @@ const userDecisionsAdmin = {
 
 //Flujo Bogota
 const flowBogota = addKeyword(EVENTS.ACTION)
-  .addAnswer('Te ayudaré a compartiendote los contactos importantes de Bogota')
+  .addAnswer('Te ayudaré compartiéndote los contactos importantes de Bogota 📱📞')
   .addAnswer('', null, async (ctx, { provider }) => {
     await provider.sendContacts(ctx.from, [
         {
@@ -49,13 +49,23 @@ const flowBogota = addKeyword(EVENTS.ACTION)
           }]
       }
   ])
+  })
+  .addAnswer('', null, async (ctx, { flowDynamic }) => {
+    // Añadir un retraso de 2 segundos (2000 ms)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Después del delay, se envían las respuestas
+    await flowDynamic([
+      'Si no te permite enviarles un mensaje 📩, puedes agregarlos a contactos y escribirles ✍️', 
+      'Si no deseas escribirles, puedes llamarlos 📞'
+    ]);
   });
 
 
 
   //Flujo cali
 const flowCali = addKeyword(EVENTS.ACTION)
-    .addAnswer('Te ayudaré a compartiendote los contactos importantes de Cali')
+  .addAnswer('Te ayudaré compartiéndote los contactos importantes de Cali 📱📞')
     .addAnswer('', null, async (ctx, { provider }) => {
       await provider.sendContacts(ctx.from, [
           {
@@ -65,7 +75,7 @@ const flowCali = addKeyword(EVENTS.ACTION)
               },
               phones: [{
                   phone: '+573147516693',
-                  type: 'CELL'
+                  type: 'WORK'
               }]
           }
       ])
@@ -79,10 +89,20 @@ const flowCali = addKeyword(EVENTS.ACTION)
             },
             phones: [{
                 phone: '+573147516693',
-                type: 'CELL'
+                type: 'WORK'
             }]
         }
     ])
+  })
+  .addAnswer('', null, async (ctx, { flowDynamic }) => {
+    // Añadir un retraso de 2 segundos (2000 ms)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Después del delay, se envían las respuestas
+    await flowDynamic([
+      'Si no te permite enviarles un mensaje 📩, puedes agregarlos a contactos y escribirles ✍️', 
+      'Si no deseas escribirles, puedes llamarlos 📞'
+    ]);
   });
 
 
